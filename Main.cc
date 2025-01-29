@@ -9,11 +9,16 @@ const std::string Sushi::DEFAULT_PROMPT = "sushi> ";
 
 int main(int argc, char *argv[])
 {
-  UNUSED(argc);
-  UNUSED(argv);
+  Sushi shell;
 
-  // A placeholder
-  std::cout << Sushi::DEFAULT_PROMPT << "Hello, world!" << std::endl;
-  
+  std::cout << Sushi::DEFAULT_PROMPT;
+  std::string input = shell.read_line(std::cin);
+
+  if (input.empty()) {
+    shell.store_to_history(input);
+  }
+
+  shell.show_history();
+
   return EXIT_SUCCESS;
 }
