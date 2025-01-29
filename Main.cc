@@ -9,16 +9,33 @@ const std::string Sushi::DEFAULT_PROMPT = "sushi> ";
 
 int main(int argc, char *argv[])
 {
-  Sushi shell;
+    UNUSED(argc);
+    UNUSED(argv);
 
-  std::cout << Sushi::DEFAULT_PROMPT;
-  std::string input = shell.read_line(std::cin);
+    const char *home_dir = std::getenv("HOME");
+    if (!home_dir)
+    {
+        std::cerr << "Error: HOME environment variable not set." << std::endl;
+        return EXIT_FAILURE;
+    }
 
-  if (input.empty()) {
-    shell.store_to_history(input);
-  }
+    std::string config_path = std::string(home_dir) + "/sushi.conf";
+    if (!read_config(config_path.c_str(), true))
+    {
+        std::cerr << "Error: Failed to read configuration file." << std::endl;
+        return EXIT_FAILURE;
+    }
 
-  shell.show_history();
+    std::cout << Sushi::DEFAULT_PROMPT;
+    std::string command = read_line(std::cin);
+    if (command.empty())
+    {
+        std::cerr << "Error: Failed to read command." << std::endl;
+        return EXIT_FAILURE;
+    }
 
-  return EXIT_SUCCESS;
+    store_to_history(command);
+    show_history();
+
+    return EXIT_SUCCESS;
 }
