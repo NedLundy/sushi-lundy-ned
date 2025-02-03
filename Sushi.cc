@@ -1,74 +1,74 @@
-#include <fstream>
-#include <vector>
 #include <iostream>
+#include <fstream>
+#include <algorithm>
+#include <iomanip>
+#include <cstdio>
 #include "Sushi.hh"
 
-const size_t Sushi::MAX_INPUT = 256;
-const size_t Sushi::HISTORY_LENGTH = 10;
-const std::string Sushi::DEFAULT_PROMPT = "sushi> ";
-
-// DZ: `history` is a lready defined in the Sushi class
-//static std::vector<std::string> command_history;
-
-// DZ: Must be a member function
-// DZ: Many features are missing
 std::string Sushi::read_line(std::istream &in)
 {
   std::string line;
-  if (!std::getline(in, line))
-  {
+  if(!std::getline (in, line)) {// Has the operation failed?
+    if(!in.eof()) { 
+      std::perror("getline");
+    }
     return "";
-}
-return line;
+  }
+    
+  // Is the line empty?
+  if(std::all_of(line.begin(), line.end(), isspace)) {
+    return "";
+  }
+
+  // Is the line too long?
+  if(line.size() > MAX_INPUT_SIZE) {
+    line.resize(MAX_INPUT_SIZE);
+    std::cerr << "Line too long, truncated." << std::endl;
+  }
+  
+  return line; 
 }
 
-// DZ: Must be a member function
 bool Sushi::read_config(const char *fname, bool ok_if_missing)
 {
+  // Try to open a config file
   std::ifstream config_file(fname);
-  if (!config_file)
-  {
-    if (!ok_if_missing)
-    {
-      // DZ: Must use std::perror
-      std::cerr << "Error: Configuration file not found: " << fname << std::endl;
-}
-    // DZ: Wrong, if "ok if missing" then return `true`
-  return false;
-}
-
-std::string line;
-while (std::getline(config_file, line))
-{
-  // DZ: Wrong checks
-  if (!line.empty() && line[0] != '#') // DZ: Why #???
-  {
-        store_to_history(line);
+  if (!config_file) {
+    if (!ok_if_missing) {
+      std::perror(fname);
+      return false;
+    }
+    return true;
   }
-}
-return true;
 
+  // Read the config file
+  while(!config_file.eof()) {
+    std::string line = read_line(config_file);
+    store_to_history(line);
+  }
+  
+  return true; 
 }
 
-// DZ: Must be a member function
-// DZ: `histoey, not `commmand_history`
 void Sushi::store_to_history(std::string line)
 {
-  // DZ: Must check if `line` is empty
-  if (history.size() >= Sushi::HISTORY_LENGTH)
-    {
-      history.erase(history.begin());
-    }
-    history.push_back(line);
+  if (line.empty()) {
+    return;    
+  }
+
+  // Is the history buffer full?
+  while (history.size() >= HISTORY_LENGTH) {
+    history.pop_front();
+  }
+  
+  history.emplace_back(line);
 }
 
-// DZ: Must be a member function
-void Sushi::show_history()
+void Sushi::show_history() const
 {
-  for (const auto &cmd : history)
-    {
-      // DZ: Wrong format
-        std::cout << cmd << std::endl;
+  int index = 1;
+  for (const auto &cmd: history) {
+    std::cout << std::setw(5) << index++ << "  " << cmd << std::endl;
   }
 }
 
