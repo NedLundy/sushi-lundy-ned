@@ -1,46 +1,31 @@
-#include <cstdlib>
-#include <iostream>
-#include "Sushi.hh"
+#pragma once
+#include <iostream> 
+#include <vector>
+#include <string> 
 
-Sushi my_shell; // New global var
-// Initialize the static constants
-// DZ: Duplicates
-//const size_t Sushi::MAX_INPUT = 256;
-//const size_t Sushi::HISTORY_LENGTH = 10;
-//const std::string Sushi::DEFAULT_PROMPT = "sushi> ";
+class Sushi {
+private:
+  std::vector<std::string> history;
+  static const size_t HISTORY_LENGTH;
+  static const size_t MAX_INPUT;
+  bool exit_flag = false; 
 
-int main(int argc, char *argv[])
-{
-    UNUSED(argc);
-    UNUSED(argv);
+public:
+  Sushi() : history() {};
+  
+  std::string read_line(std::istream &in);
+  std::string unquote_and_dup(const std::string &s); 
+  bool read_config(const char *fname, bool ok_if_missing);
+  void store_to_history(const std::string &line);
+  void show_history() const;
+  void re_parse(int i);
+  void set_exit_flag();
+  bool get_exit_flag() const;
+  int parse_command(const std::string &command);
 
-    const char *home_dir = std::getenv("HOME");
-    // DZ: No need to exit because "ok if missing"
-    if (!home_dir)
-    {
-        std::cerr << "Error: HOME environment variable not set." << std::endl;
-        return EXIT_FAILURE;
-    }
+  static const std::string DEFAULT_PROMPT;
+};
 
-    std::string config_path = std::string(home_dir) + "/sushi.conf";
-    if (!my_shell.read_config(config_path.c_str(), true))
-    {
-      // DZ: Error displayed in the wrong function
-      // std::cerr << "Error: Failed to read configuration file." << std::endl;
-        return EXIT_FAILURE;
-    }
+#define UNUSED(expr) do {(void)(expr);} while (0)
 
-    std::cout << Sushi::DEFAULT_PROMPT;
-    std::string command = my_shell.read_line(std::cin);
-    if (command.empty())
-    {
-      // DZ: Not necessarily an error
-        std::cerr << "Error: Failed to read command." << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    my_shell.store_to_history(command);
-    my_shell.show_history();
-
-    return EXIT_SUCCESS;
-}
+extern Sushi my_shell;

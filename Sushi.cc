@@ -7,77 +7,80 @@ const size_t Sushi::MAX_INPUT = 256;
 const size_t Sushi::HISTORY_LENGTH = 10;
 const std::string Sushi::DEFAULT_PROMPT = "sushi> ";
 
-// DZ: `history` is a lready defined in the Sushi class
-//static std::vector<std::string> command_history;
-
-// DZ: Must be a member function
-// DZ: Many features are missing
-std::string Sushi::read_line(std::istream &in)
-{
-  std::string line;
-  if (!std::getline(in, line))
-  {
-    return "";
-}
-return line;
+std::string Sushi::read_line(std::istream &in) {
+    std::string line;
+    if (!std::getline(in, line)) {
+        return "";
+    }
+    return line;
 }
 
-// DZ: Must be a member function
-bool Sushi::read_config(const char *fname, bool ok_if_missing)
-{
-  std::ifstream config_file(fname);
-  if (!config_file)
-  {
-    if (!ok_if_missing)
-    {
-      // DZ: Must use std::perror
-      std::cerr << "Error: Configuration file not found: " << fname << std::endl;
-}
-    // DZ: Wrong, if "ok if missing" then return `true`
-  return false;
-}
-
-std::string line;
-while (std::getline(config_file, line))
-{
-  // DZ: Wrong checks
-  if (!line.empty() && line[0] != '#') // DZ: Why #???
-  {
-        store_to_history(line);
-  }
-}
-return true;
-
+bool Sushi::read_config(const char *fname, bool ok_if_missing) {
+    std::ifstream config_file(fname);
+    if (!config_file) {
+        if (!ok_if_missing) {
+            std::perror("Error: Configuration file not found");
+        }
+        return ok_if_missing;
+    }
+    std::string line;
+    while (std::getline(config_file, line)) {
+        if (!line.empty() && line[0] != '#') {
+            if (parse_command(line) == 0) {
+                store_to_history(line);
+            }
+        }
+    }
+    return true;
 }
 
-// DZ: Must be a member function
-// DZ: `histoey, not `commmand_history`
-void Sushi::store_to_history(std::string line)
-{
-  // DZ: Must check if `line` is empty
-  if (history.size() >= Sushi::HISTORY_LENGTH)
-    {
-      history.erase(history.begin());
+void Sushi::store_to_history(const std::string &line) {
+    if (line.empty()) return;
+    if (history.size() >= HISTORY_LENGTH) {
+        history.erase(history.begin());
     }
     history.push_back(line);
 }
 
-// DZ: Must be a member function
-void Sushi::show_history()
-{
-  for (const auto &cmd : history)
-    {
-      // DZ: Wrong format
-        std::cout << cmd << std::endl;
-  }
+void Sushi::show_history() const {
+    for (size_t i = 0; i < history.size(); ++i) {
+        std::cout << i + 1 << ": " << history[i] << std::endl;
+    }
 }
 
-void Sushi::set_exit_flag()
-{
-  // To be implemented
+void Sushi::set_exit_flag() {
+    exit_flag = true;
 }
 
-bool Sushi::get_exit_flag() const
-{
-  return false; // To be fixed
+bool Sushi::get_exit_flag() const {
+    return exit_flag;
+}
+
+std::string Sushi::unquote_and_dup(const std::string &s) {
+    std::string result;
+    for (size_t i = 0; i < s.size(); ++i) {
+        if (s[i] == '\\' && i + 1 < s.size()) {
+            switch (s[++i]) {
+                case 'n': result += '\n'; break;
+                case 't': result += '\t'; break;
+                case '\\': result += '\\'; break;
+                default: result += s[i]; break;
+            }
+        } else {
+            result += s[i];
+        }
+    }
+    return result;
+}
+
+void Sushi::re_parse(int i) {
+    if (i <= 0 || i > history.size()) {
+        std::cerr << "Error: !" << i << ": event not found" << std::endl;
+        return;
+    }
+    std::string command = history[i - 1];
+    std::cout << "Re-executing: " << command << std::endl;
+    if (parse_command(command) == 0) {
+        store_to_history(command);
+    }
 }
