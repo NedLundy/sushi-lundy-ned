@@ -24,7 +24,7 @@
 %token YY_SUSHI_UNKNOWN
 %token<s> YY_SUSHI_TOK
 
-%type<std::string> arg   /* Changed from std::string* to std::string */
+%type<s> arg
 %type<i> bg_mode
 
 %start cmdline
@@ -41,7 +41,6 @@ cmdline:
 | YY_SUSHI_HISTORY { my_shell.show_history(); }
 | YY_SUSHI_BANG    { my_shell.re_parse($1); }
 | YY_SUSHI_EXIT    { my_shell.set_exit_flag(); }
-| YY_SUSHI_UNKNOWN { /* Ignore unknown tokens instead of failing */ }
 
 pipe: 
   YY_SUSHI_BAR out_exe  
@@ -81,15 +80,15 @@ bg_mode:
 | YY_SUSHI_AMP { $$ = 1; }
 
 exe: 
-  /* Allow empty commands for robustness */ 
-  /* This prevents crashes if a blank input is passed */
-  | args 
+  args 
 
 args:  
   arg      
 | args arg 
 
 arg: 
-  YY_SUSHI_TOK { $$ = std::move(*$1); delete $1; } /* Handle memory properly */
+  YY_SUSHI_TOK { $$ = $1; }
 
 %%
+
+/* This section is empty */
