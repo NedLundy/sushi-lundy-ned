@@ -1,31 +1,33 @@
-#pragma once
-#include <iostream> 
-#include <vector>
-#include <string> 
+#include <cstdlib>
+#include <iostream>
+#include "Sushi.hh"
 
-class Sushi {
-private:
-  std::vector<std::string> history;
-  static const size_t HISTORY_LENGTH;
-  static const size_t MAX_INPUT;
-  bool exit_flag = false; 
+Sushi my_shell;
 
-public:
-  Sushi() : history() {};
-  
-  std::string read_line(std::istream &in);
-  std::string unquote_and_dup(const std::string &s); 
-  bool read_config(const char *fname, bool ok_if_missing);
-  void store_to_history(const std::string &line);
-  void show_history() const;
-  void re_parse(int i);
-  void set_exit_flag();
-  bool get_exit_flag() const;
-  int parse_command(const std::string &command);
+int main(int argc, char *argv[]) {
+    UNUSED(argc);
+    UNUSED(argv);
 
-  static const std::string DEFAULT_PROMPT;
-};
+    const char *home_dir = std::getenv("HOME");
+    if (!home_dir) {
+        std::cerr << "Error: HOME environment variable not set." << std::endl;
+        return EXIT_FAILURE;
+    }
 
-#define UNUSED(expr) do {(void)(expr);} while (0)
+    std::string config_path = std::string(home_dir) + "/sushi.conf";
+    my_shell.read_config(config_path.c_str(), true);
 
-extern Sushi my_shell;
+    while (!my_shell.get_exit_flag()) {
+        std::cout << Sushi::DEFAULT_PROMPT;  
+        std::string command = my_shell.read_line(std::cin);
+
+        if (command.empty()) {
+            continue;
+        }
+
+        if (my_shell.parse_command(command) == 0) {
+            my_shell.store_to_history(command);
+        }
+    }
+    return EXIT_SUCCESS;
+}
