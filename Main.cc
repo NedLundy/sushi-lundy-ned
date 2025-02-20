@@ -8,6 +8,9 @@ int main(int argc, char *argv[]) {
     UNUSED(argc);
     UNUSED(argv);
 
+  // New function call
+  Sushi::prevent_interruption();
+  
     const char *home_dir = std::getenv("HOME");
     if (!home_dir) {
         std::cerr << "Error: HOME environment variable not set." << std::endl;

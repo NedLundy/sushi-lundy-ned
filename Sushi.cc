@@ -56,6 +56,13 @@ bool Sushi::get_exit_flag() const {
     return exit_flag;
 }
 
+static std::string *unquote_and_dup(const char *s)
+{
+  return new std::string(s); 
+}
+
+// DZ: Wrong signature, also wrongly implemented: where are \a, \b, etc?
+/*
 std::string Sushi::unquote_and_dup(const std::string &s) {
     std::string result;
     for (size_t i = 0; i < s.size(); ++i) {
@@ -71,10 +78,12 @@ std::string Sushi::unquote_and_dup(const std::string &s) {
         }
     }
     return result;
-}
+    }*/
 
+// It belongs to `suchi_parse.cc` ad is already defined there
 void Sushi::re_parse(int i) {
-    if (i <= 0 || i > history.size()) {
+  // DZ: comparison of integer expressions of different signedness
+  if (i <= 0 || i > static_cast<int>(history.size())) {
         std::cerr << "Error: !" << i << ": event not found" << std::endl;
         return;
     }
@@ -83,4 +92,37 @@ void Sushi::re_parse(int i) {
     if (parse_command(command) == 0) {
         store_to_history(command);
     }
+}
+//---------------------------------------------------------
+// New methods
+int Sushi::spawn(Program *exe, bool bg)
+{
+  // Must be implemented
+  UNUSED(exe);
+  UNUSED(bg);
+
+  return EXIT_SUCCESS;
+}
+
+void Sushi::prevent_interruption() {
+  // Must be implemented
+}
+
+void Sushi::refuse_to_die(int signo) {
+  // Must be implemented
+  UNUSED(signo);
+}
+
+char* const* Program::vector2array() {
+  // Must be implemented
+  return nullptr; 
+}
+
+void Program::free_array(char *const argv[]) {
+  // Must be implemented
+  UNUSED(argv);
+}
+
+Program::~Program() {
+  // Do not implement now
 }
