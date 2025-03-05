@@ -1,6 +1,12 @@
 #include <fstream>
 #include <vector>
 #include <iostream>
+#include <cstdlib>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <cstring>
+#include <csignal>
 #include "Sushi.hh"
 
 const size_t Sushi::MAX_INPUT = 256;
@@ -56,34 +62,13 @@ bool Sushi::get_exit_flag() const {
     return exit_flag;
 }
 
-static std::string *unquote_and_dup(const char *s)
-{
-  return new std::string(s); 
+std::string* Sushi::unquote_and_dup(const char *s) {
+    if (!s) return nullptr;
+    return new std::string(s);
 }
 
-// DZ: Wrong signature, also wrongly implemented: where are \a, \b, etc?
-/*
-std::string Sushi::unquote_and_dup(const std::string &s) {
-    std::string result;
-    for (size_t i = 0; i < s.size(); ++i) {
-        if (s[i] == '\\' && i + 1 < s.size()) {
-            switch (s[++i]) {
-                case 'n': result += '\n'; break;
-                case 't': result += '\t'; break;
-                case '\\': result += '\\'; break;
-                default: result += s[i]; break;
-            }
-        } else {
-            result += s[i];
-        }
-    }
-    return result;
-    }*/
-
-// It belongs to `suchi_parse.cc` ad is already defined there
 void Sushi::re_parse(int i) {
-  // DZ: comparison of integer expressions of different signedness
-  if (i <= 0 || i > static_cast<int>(history.size())) {
+    if (i <= 0 || i > static_cast<int>(history.size())) {
         std::cerr << "Error: !" << i << ": event not found" << std::endl;
         return;
     }
@@ -93,36 +78,50 @@ void Sushi::re_parse(int i) {
         store_to_history(command);
     }
 }
-//---------------------------------------------------------
-// New methods
-int Sushi::spawn(Program *exe, bool bg)
-{
-  // Must be implemented
-  UNUSED(exe);
-  UNUSED(bg);
 
-  return EXIT_SUCCESS;
+int Sushi::spawn(Program *exe, bool bg) {
+    if (!exe) return EXIT_FAILURE;
+    pid_t pid = fork();
+    if (pid < 0) {
+        std::cerr << "Error: Failed to fork process" << std::endl;
+        return EXIT_FAILURE;
+    }
+    if (pid == 0) { // Child process
+        char* const* argv = exe->vector2array();
+        execvp(argv[0], argv);
+        std::cerr << "Error: Command execution failed" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    if (!bg) {
+        waitpid(pid, nullptr, 0);
+    }
+    return EXIT_SUCCESS;
 }
 
 void Sushi::prevent_interruption() {
-  // Must be implemented
+    struct sigaction sa;
+    sa.sa_handler = Sushi::refuse_to_die;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
+    sigaction(SIGINT, &sa, nullptr);
 }
 
 void Sushi::refuse_to_die(int signo) {
-  // Must be implemented
-  UNUSED(signo);
+    if (signo == SIGINT) {
+        std::cout << "\nType exit to exit the shell" << std::endl;
+    }
 }
 
 char* const* Program::vector2array() {
-  // Must be implemented
-  return nullptr; 
+    
+    return nullptr;
 }
 
 void Program::free_array(char *const argv[]) {
-  // Must be implemented
-  UNUSED(argv);
+    
+    UNUSED(argv);
 }
 
 Program::~Program() {
-  // Do not implement now
+   
 }

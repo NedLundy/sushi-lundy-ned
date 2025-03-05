@@ -3,13 +3,10 @@
 #include <vector>
 #include <string> 
 
-//--------------------------------------------------------------------
-// New class
-// I/O redirections, as in "foobar < foo > bar"
+
 class Redirection {
 private:
-  // stdin, stdout-write, stdout-append
-  std::string *redir_in, *redir_out1, *redir_out2;
+  std::string *redir_in = nullptr, *redir_out1 = nullptr, *redir_out2 = nullptr;
   
 public:
   void set_in(std::string *fname)   { redir_in = fname; }
@@ -20,30 +17,27 @@ public:
   }
 };
 
-// New class
-// The program to be executed
+
 class Program {
 private:
-  std::vector<std::string*> *args; // Arguments, including the program name
+  std::vector<std::string*> *args;
   Redirection redir;
-  Program *pipe; // The previous program in the pipeline, if any; NULL otherwise
+  Program *pipe = nullptr; 
 
-  // Helper methods
-  // Converts the args to whatever `execvp` expects
+  
   char* const* vector2array();
-  // Frees the memory allocated by vector2array()
+
   void free_array(char *const argv[]);
 
 public:
   Program(std::vector<std::string*> *args) : args(args) {};
   ~Program();
-  void set_pipe(Program *pipe) { this->pipe = pipe; };
-  void set_redir(Redirection &redir) { this->redir = redir; };
+  void set_pipe(Program *pipe) { this->pipe = pipe; }
+  void set_redir(Redirection &redir) { this->redir = redir; }
   std::string progname() { return *args->at(0); }
 };
 
-// Old class(es)
-//--------------------------------------------------------------------
+
 class Sushi {
 private:
   std::vector<std::string> history;
@@ -55,24 +49,19 @@ public:
   Sushi() : history() {};
   
   std::string read_line(std::istream &in);
-  // DZ: You changed the function signature, why?
-  // std::string unquote_and_dup(const std::string &s);
   static std::string *unquote_and_dup(const char *s);
-  // DZ: Why did you remove this function?
-  static std::string *getenv(const char *name);  
+  static std::string *getenv(const char *name);
   bool read_config(const char *fname, bool ok_if_missing);
   void store_to_history(const std::string &line);
   void show_history() const;
   void re_parse(int i);
   void set_exit_flag();
   bool get_exit_flag() const;
-  // DZ: Wrong signature
-  // int parse_command(const std::string &command);
-  static int parse_command(const std::string command);
+  static int parse_command(const std::string &command);
   
-  int spawn(Program *exe, bool bg); // New method
-  static void prevent_interruption(); // New method
-  static void refuse_to_die(int signo); // New method
+  int spawn(Program *exe, bool bg);
+  static void prevent_interruption();
+  static void refuse_to_die(int signo);
   static const std::string DEFAULT_PROMPT;
 };
 
