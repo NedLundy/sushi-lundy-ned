@@ -6,7 +6,7 @@
 
 class Redirection {
 private:
-  std::string *redir_in = nullptr, *redir_out1 = nullptr, *redir_out2 = nullptr;
+  std::string *redir_in /*= nullptr*/, *redir_out1 /*= nullptr*/, *redir_out2 /*= nullptr*/;
   
 public:
   void set_in(std::string *fname)   { redir_in = fname; }
@@ -25,16 +25,16 @@ private:
   Program *pipe = nullptr; 
 
   
-  char* const* vector2array();
-
-  void free_array(char *const argv[]);
-
 public:
   Program(std::vector<std::string*> *args) : args(args) {};
   ~Program();
   void set_pipe(Program *pipe) { this->pipe = pipe; }
   void set_redir(Redirection &redir) { this->redir = redir; }
   std::string progname() { return *args->at(0); }
+  char* const* vector2array();
+
+  void free_array(char *const argv[]);
+
 };
 
 
@@ -57,7 +57,7 @@ public:
   void re_parse(int i);
   void set_exit_flag();
   bool get_exit_flag() const;
-  static int parse_command(const std::string &command);
+  static int parse_command(const std::string command);
   
   int spawn(Program *exe, bool bg);
   static void prevent_interruption();

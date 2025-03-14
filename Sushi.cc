@@ -62,10 +62,13 @@ bool Sushi::get_exit_flag() const {
     return exit_flag;
 }
 
+// DZ: Duplicated definition
+/*
 std::string* Sushi::unquote_and_dup(const char *s) {
     if (!s) return nullptr;
     return new std::string(s);
 }
+*/
 
 void Sushi::re_parse(int i) {
     if (i <= 0 || i > static_cast<int>(history.size())) {
@@ -83,16 +86,22 @@ int Sushi::spawn(Program *exe, bool bg) {
     if (!exe) return EXIT_FAILURE;
     pid_t pid = fork();
     if (pid < 0) {
-        std::cerr << "Error: Failed to fork process" << std::endl;
+	// DZ: Must use perror 
+	std::perror("fork");
+        //std::cerr << "Error: Failed to fork process" << std::endl;
         return EXIT_FAILURE;
     }
     if (pid == 0) { // Child process
+      // DZ: The followinfg is always `nullptr`
         char* const* argv = exe->vector2array();
         execvp(argv[0], argv);
-        std::cerr << "Error: Command execution failed" << std::endl;
+	// DZ: Must use perror 
+	std::perror(argv[0]);
+        //std::cerr << "Error: Command execution failed" << std::endl;
         exit(EXIT_FAILURE);
     }
     if (!bg) {
+      // DZ: Error checking?
         waitpid(pid, nullptr, 0);
     }
     return EXIT_SUCCESS;
@@ -102,7 +111,7 @@ void Sushi::prevent_interruption() {
     struct sigaction sa;
     sa.sa_handler = Sushi::refuse_to_die;
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
+    sa.sa_flags = SA_RESTART; // DZ: not 0
     sigaction(SIGINT, &sa, nullptr);
 }
 
@@ -113,7 +122,7 @@ void Sushi::refuse_to_die(int signo) {
 }
 
 char* const* Program::vector2array() {
-    
+  // DZ: This function makes spawn() possible!
     return nullptr;
 }
 
