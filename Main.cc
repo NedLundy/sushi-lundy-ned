@@ -5,32 +5,29 @@
 Sushi my_shell;
 
 int main(int argc, char *argv[]) {
-    UNUSED(argc);
-    UNUSED(argv);
+    Sushi::prevent_interruption();
 
-  // New function call
-  Sushi::prevent_interruption();
-  
     const char *home_dir = std::getenv("HOME");
-    if (!home_dir) {
-        std::cerr << "Error: HOME environment variable not set." << std::endl;
-        return EXIT_FAILURE;
-    }
-
-    std::string config_path = std::string(home_dir) + "/sushi.conf";
-    my_shell.read_config(config_path.c_str(), true);
-
-    while (!my_shell.get_exit_flag()) {
-        std::cout << Sushi::DEFAULT_PROMPT;  
-        std::string command = my_shell.read_line(std::cin);
-
-        if (command.empty()) {
-            continue;
-        }
-
-        if (my_shell.parse_command(command) == 0) {
-            my_shell.store_to_history(command);
+    if (home_dir) {
+        std::string config_path = std::string(home_dir) + "/" + Sushi::DEFAULT_CONFIG;
+        if (!my_shell.read_config(config_path.c_str(), true)) {
+            std::cerr << "Warning: failed to read config file\n";
         }
     }
+
+    // Handle script execution
+    for (int i = 1; i < argc; ++i) {
+        if (!my_shell.read_config(argv[i], false)) {
+            std::cerr << "Failed to read script file: " << argv[i] << "\n";
+            return EXIT_FAILURE; 
+        }
+    }
+
+    // Only enter mainloop if shell isn't supposed to exit
+    if (!my_shell.get_exit_flag()) {
+        my_shell.mainloop();
+    }
+
     return EXIT_SUCCESS;
-}
+};
+

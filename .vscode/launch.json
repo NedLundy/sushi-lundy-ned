@@ -1,6 +1,23 @@
 {
-  "version": "0.2.0",
   "configurations": [
+    {
+      "name": "Ubuntu",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "/usr/include/c++/13",
+        "/usr/include/x86_64-linux-gnu/c++/13",
+        "/usr/include/c++/13/backward",
+        "/usr/lib/gcc/x86_64-linux-gnu/13/include",
+        "/usr/local/include",
+        "/usr/include/x86_64-linux-gnu",
+        "/usr/include"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/g++",
+      "cStandard": "gnu17",
+      "cppStandard": "gnu++17",
+      "intelliSenseMode": "linux-gcc-x64"
+    },
     {
       "name": "C/C++ Runner: Debug Session",
       "type": "cppdbg",
@@ -20,5 +37,6 @@
         }
       ]
     }
-  ]
+  ],
+  "version": 4
 }

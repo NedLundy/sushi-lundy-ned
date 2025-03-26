@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "build-sushi",
+        "type": "shell",
+        "command": "g++",
+        "args": [
+          "-std=c++17",
+          "-g",
+          "main.cc",
+          "sushi.cc",
+          "sushi_yyparser.tab.c",
+          "sushi_yylexer.c",
+          "-o", "sushi.exe"
+        ],
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": ["$gcc"]
+      }
+    ]
+  }
+  

@@ -81,7 +81,7 @@ union YYSTYPE
   bool b;
   int i;
   std::string *s;
-  std::vector <std::string*> *s_vec;
+  std::vector<std::string*> *s_vec;
   Program *p;
   Redirection redir;
 

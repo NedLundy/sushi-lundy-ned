@@ -70,8 +70,8 @@
 #line 1 "sushi_yyparser.y"
 
 #include "Sushi.hh"
-  int yylex();
-  void yyerror(const char* s);
+int yylex();
+void yyerror(const char* s);
 
 #line 77 "sushi_yyparser.tab.c"
 
@@ -459,7 +459,7 @@ union yyalloc
 #endif /* !YYCOPY_NEEDED */
 
 /* YYFINAL -- State number of the termination state.  */
-#define YYFINAL  14
+#define YYFINAL  16
 /* YYLAST -- Last index in YYTABLE.  */
 #define YYLAST   35
 
@@ -522,9 +522,9 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int8 yyrline[] =
 {
        0,    42,    42,    43,    44,    45,    46,    47,    48,    49,
-      50,    53,    54,    57,    58,    61,    62,    65,    66,    69,
-      70,    73,    74,    77,    78,    79,    81,    82,    83,    86,
-      87,    90,    93,    94,    97
+      50,    54,    55,    59,    60,    64,    65,    69,    70,    74,
+      75,    79,    80,    84,    85,    86,    89,    90,    91,    94,
+      95,    99,   103,   104,   108
 };
 #endif
 
@@ -556,7 +556,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-20)
+#define YYPACT_NINF (-22)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -570,11 +570,11 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -3,   -20,     2,   -20,   -20,   -20,   -20,    26,    19,    23,
-       4,     2,    16,   -20,   -20,   -20,   -20,     2,    22,     2,
-       2,     2,   -20,    21,   -20,    12,   -20,   -20,   -20,     2,
-     -20,    -4,   -20,     2,   -20,   -20,   -20,   -20,   -20,   -20,
-     -20,   -20,   -20
+       1,   -22,   -13,   -22,   -22,   -22,   -13,   -22,    11,    23,
+      22,    13,   -13,   -22,   -22,   -13,   -22,   -22,   -22,   -13,
+      27,   -13,   -13,   -13,   -22,     6,   -22,    17,   -22,   -22,
+     -22,   -22,   -22,   -10,   -13,   -22,   -22,   -22,   -22,   -22,
+     -22,   -22,   -22
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -582,25 +582,25 @@ static const yytype_int8 yypact[] =
    means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       2,     9,     0,    10,     8,     6,    34,     0,    29,     0,
-      13,    31,    32,     7,     1,    30,     3,     0,    29,     0,
-       0,     0,    25,    24,    14,    23,    21,    22,    33,     0,
-      11,    17,    32,     0,     4,    26,    27,    28,    20,    19,
-       5,    18,    12
+       2,     9,     0,    10,     8,     6,     0,    34,     0,    29,
+       0,    13,    31,    32,     7,     0,     1,    30,     3,     0,
+      29,     0,     0,     0,    25,    24,    14,    23,    21,    22,
+      33,     5,    11,    17,     0,     4,    26,    27,    28,    20,
+      19,    18,    12
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -20,   -20,   -20,   -20,   -20,    -1,   -20,   -19,   -20,    10,
-     -20,   -20,    17,    34,   -20,     0
+     -22,   -22,   -22,   -22,   -22,    -3,   -22,   -21,   -22,     8,
+     -22,   -22,    14,    35,   -22,    -2
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-       0,     7,    18,     8,     9,    30,    22,    23,    24,    25,
-      26,    27,    16,    31,    11,    32
+       0,     8,    20,     9,    10,    32,    24,    25,    26,    27,
+      28,    29,    18,    33,    12,    13
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -608,29 +608,29 @@ static const yytype_int8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-      12,     1,    13,     2,     3,     4,    39,    20,    21,   -15,
-       5,    28,    41,     6,    19,    20,    21,   -16,     6,    35,
-      36,    37,    15,    20,    21,    15,    14,    33,    17,    40,
-      29,    19,    42,    38,    10,    34
+      14,    22,    23,     7,    15,     1,    40,     2,     3,     4,
+      30,    16,    41,    31,     5,     6,    21,     7,   -15,    36,
+      37,    38,   -16,    21,    22,    23,    17,    19,    22,    23,
+      17,    42,    34,    39,    35,    11
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     4,     2,     6,     7,     8,    25,    11,    12,     5,
-      13,    11,    31,    16,    10,    11,    12,     5,    16,    19,
-      20,    21,     3,    11,    12,     3,     0,     5,     5,    29,
-      14,    10,    33,    23,     0,    18
+       2,    11,    12,    16,     6,     4,    27,     6,     7,     8,
+      12,     0,    33,    15,    13,    14,    10,    16,     5,    21,
+      22,    23,     5,    10,    11,    12,     3,     5,    11,    12,
+       3,    34,     5,    25,    20,     0
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     4,     6,     7,     8,    13,    16,    18,    20,    21,
-      30,    31,    32,    32,     0,     3,    29,     5,    19,    10,
-      11,    12,    23,    24,    25,    26,    27,    28,    32,    14,
-      22,    30,    32,     5,    29,    32,    32,    32,    26,    24,
-      32,    24,    22
+       0,     4,     6,     7,     8,    13,    14,    16,    18,    20,
+      21,    30,    31,    32,    32,    32,     0,     3,    29,     5,
+      19,    10,    11,    12,    23,    24,    25,    26,    27,    28,
+      32,    32,    22,    30,     5,    29,    32,    32,    32,    26,
+      24,    24,    22
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
@@ -1113,180 +1113,194 @@ yyreduce:
     {
   case 3: /* cmdline: redir_exe bg_mode  */
 #line 43 "sushi_yyparser.y"
-                       { my_shell.spawn((yyvsp[-1].p), (yyvsp[0].b)); }
+                                          { my_shell.spawn((yyvsp[-1].p), (yyvsp[0].b)); }
 #line 1118 "sushi_yyparser.tab.c"
     break;
 
   case 4: /* cmdline: in_exe pipe bg_mode  */
 #line 44 "sushi_yyparser.y"
-                       { (yyvsp[-2].p)->set_pipe((yyvsp[-1].p)); my_shell.spawn((yyvsp[-2].p), (yyvsp[0].b)); }
+                                          { (yyvsp[-2].p)->set_pipe((yyvsp[-1].p)); my_shell.spawn((yyvsp[-2].p), (yyvsp[0].b)); }
 #line 1124 "sushi_yyparser.tab.c"
+    break;
+
+  case 5: /* cmdline: YY_SUSHI_SET arg arg  */
+#line 45 "sushi_yyparser.y"
+                                          { my_shell.putenv((yyvsp[-1].s), (yyvsp[0].s)); }
+#line 1130 "sushi_yyparser.tab.c"
     break;
 
   case 8: /* cmdline: YY_SUSHI_HISTORY  */
 #line 48 "sushi_yyparser.y"
-                   { my_shell.show_history(); }
-#line 1130 "sushi_yyparser.tab.c"
+                                          { my_shell.show_history(); }
+#line 1136 "sushi_yyparser.tab.c"
     break;
 
   case 9: /* cmdline: YY_SUSHI_BANG  */
 #line 49 "sushi_yyparser.y"
-                   { my_shell.re_parse((yyvsp[0].i)); }
-#line 1136 "sushi_yyparser.tab.c"
+                                          { my_shell.re_parse((yyvsp[0].i)); my_shell.re_execute(); }
+#line 1142 "sushi_yyparser.tab.c"
     break;
 
   case 10: /* cmdline: YY_SUSHI_EXIT  */
 #line 50 "sushi_yyparser.y"
-                   { my_shell.set_exit_flag(); }
-#line 1142 "sushi_yyparser.tab.c"
-    break;
-
-  case 11: /* pipe: YY_SUSHI_BAR out_exe  */
-#line 53 "sushi_yyparser.y"
-                      { (yyval.p) = (yyvsp[0].p); }
+                                          { my_shell.set_exit_flag(); }
 #line 1148 "sushi_yyparser.tab.c"
     break;
 
-  case 12: /* pipe: pipe YY_SUSHI_BAR out_exe  */
+  case 11: /* pipe: YY_SUSHI_BAR out_exe  */
 #line 54 "sushi_yyparser.y"
-                            { (yyvsp[0].p)->set_pipe((yyvsp[-2].p)); (yyval.p) = (yyvsp[-2].p); }
+                                          { (yyval.p) = (yyvsp[0].p); }
 #line 1154 "sushi_yyparser.tab.c"
     break;
 
-  case 13: /* redir_exe: exe  */
-#line 57 "sushi_yyparser.y"
-      { (yyval.p) = (yyvsp[0].p); }
+  case 12: /* pipe: pipe YY_SUSHI_BAR out_exe  */
+#line 55 "sushi_yyparser.y"
+                                          { (yyvsp[0].p)->set_pipe((yyvsp[-2].p)); (yyval.p) = (yyvsp[-2].p); }
 #line 1160 "sushi_yyparser.tab.c"
     break;
 
-  case 14: /* redir_exe: exe any_redir  */
-#line 58 "sushi_yyparser.y"
-                { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
+  case 13: /* redir_exe: exe  */
+#line 59 "sushi_yyparser.y"
+                                          { (yyval.p) = (yyvsp[0].p); }
 #line 1166 "sushi_yyparser.tab.c"
     break;
 
-  case 15: /* in_exe: exe  */
-#line 61 "sushi_yyparser.y"
-      { (yyval.p) = (yyvsp[0].p); }
+  case 14: /* redir_exe: exe any_redir  */
+#line 60 "sushi_yyparser.y"
+                                          { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
 #line 1172 "sushi_yyparser.tab.c"
     break;
 
-  case 16: /* in_exe: exe in_redir  */
-#line 62 "sushi_yyparser.y"
-               { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
+  case 15: /* in_exe: exe  */
+#line 64 "sushi_yyparser.y"
+                                          { (yyval.p) = (yyvsp[0].p); }
 #line 1178 "sushi_yyparser.tab.c"
     break;
 
-  case 17: /* out_exe: exe  */
+  case 16: /* in_exe: exe in_redir  */
 #line 65 "sushi_yyparser.y"
-      { (yyval.p) = (yyvsp[0].p); }
+                                          { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
 #line 1184 "sushi_yyparser.tab.c"
     break;
 
-  case 18: /* out_exe: exe out_redir  */
-#line 66 "sushi_yyparser.y"
-                { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
+  case 17: /* out_exe: exe  */
+#line 69 "sushi_yyparser.y"
+                                          { (yyval.p) = (yyvsp[0].p); }
 #line 1190 "sushi_yyparser.tab.c"
     break;
 
-  case 19: /* inout_redir: in_redir out_redir  */
-#line 69 "sushi_yyparser.y"
-                     { (yyvsp[0].redir).set_in((yyvsp[-1].redir)); (yyval.redir) = (yyvsp[0].redir); }
+  case 18: /* out_exe: exe out_redir  */
+#line 70 "sushi_yyparser.y"
+                                          { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
 #line 1196 "sushi_yyparser.tab.c"
     break;
 
-  case 20: /* inout_redir: out_redir in_redir  */
-#line 70 "sushi_yyparser.y"
-                     { (yyvsp[-1].redir).set_in((yyvsp[0].redir)); (yyval.redir) = (yyvsp[-1].redir); }
+  case 19: /* inout_redir: in_redir out_redir  */
+#line 74 "sushi_yyparser.y"
+                                          { (yyvsp[0].redir).set_in((yyvsp[-1].redir)); (yyval.redir) = (yyvsp[0].redir); }
 #line 1202 "sushi_yyparser.tab.c"
     break;
 
-  case 21: /* out_redir: out1_redir  */
-#line 73 "sushi_yyparser.y"
-             { (yyval.redir) = (yyvsp[0].redir); }
+  case 20: /* inout_redir: out_redir in_redir  */
+#line 75 "sushi_yyparser.y"
+                                          { (yyvsp[-1].redir).set_in((yyvsp[0].redir)); (yyval.redir) = (yyvsp[-1].redir); }
 #line 1208 "sushi_yyparser.tab.c"
     break;
 
-  case 22: /* out_redir: out2_redir  */
-#line 74 "sushi_yyparser.y"
-              { (yyval.redir) = (yyvsp[0].redir); }
+  case 21: /* out_redir: out1_redir  */
+#line 79 "sushi_yyparser.y"
+                                          { (yyval.redir) = (yyvsp[0].redir); }
 #line 1214 "sushi_yyparser.tab.c"
     break;
 
-  case 23: /* any_redir: in_redir  */
-#line 77 "sushi_yyparser.y"
-            { (yyval.redir) = (yyvsp[0].redir); }
+  case 22: /* out_redir: out2_redir  */
+#line 80 "sushi_yyparser.y"
+                                          { (yyval.redir) = (yyvsp[0].redir); }
 #line 1220 "sushi_yyparser.tab.c"
     break;
 
-  case 24: /* any_redir: out_redir  */
-#line 78 "sushi_yyparser.y"
-             { (yyval.redir) = (yyvsp[0].redir); }
+  case 23: /* any_redir: in_redir  */
+#line 84 "sushi_yyparser.y"
+                                          { (yyval.redir) = (yyvsp[0].redir); }
 #line 1226 "sushi_yyparser.tab.c"
     break;
 
-  case 25: /* any_redir: inout_redir  */
-#line 79 "sushi_yyparser.y"
-               { (yyval.redir) = (yyvsp[0].redir); }
+  case 24: /* any_redir: out_redir  */
+#line 85 "sushi_yyparser.y"
+                                          { (yyval.redir) = (yyvsp[0].redir); }
 #line 1232 "sushi_yyparser.tab.c"
     break;
 
-  case 26: /* in_redir: YY_SUSHI_LESS arg  */
-#line 81 "sushi_yyparser.y"
-                                   { (yyval.redir).set_in((yyvsp[0].s)); }
+  case 25: /* any_redir: inout_redir  */
+#line 86 "sushi_yyparser.y"
+                                          { (yyval.redir) = (yyvsp[0].redir); }
 #line 1238 "sushi_yyparser.tab.c"
     break;
 
-  case 27: /* out1_redir: YY_SUSHI_MORE arg  */
-#line 82 "sushi_yyparser.y"
-                                   { (yyval.redir).set_out1((yyvsp[0].s)); }
+  case 26: /* in_redir: YY_SUSHI_LESS arg  */
+#line 89 "sushi_yyparser.y"
+                                           { (yyval.redir).set_in((yyvsp[0].s)); }
 #line 1244 "sushi_yyparser.tab.c"
     break;
 
-  case 28: /* out2_redir: YY_SUSHI_MOREMORE arg  */
-#line 83 "sushi_yyparser.y"
-                                   { (yyval.redir).set_out2((yyvsp[0].s)); }
+  case 27: /* out1_redir: YY_SUSHI_MORE arg  */
+#line 90 "sushi_yyparser.y"
+                                           { (yyval.redir).set_out1((yyvsp[0].s)); }
 #line 1250 "sushi_yyparser.tab.c"
     break;
 
-  case 29: /* bg_mode: %empty  */
-#line 86 "sushi_yyparser.y"
-               { (yyval.b) = false; }
+  case 28: /* out2_redir: YY_SUSHI_MOREMORE arg  */
+#line 91 "sushi_yyparser.y"
+                                           { (yyval.redir).set_out2((yyvsp[0].s)); }
 #line 1256 "sushi_yyparser.tab.c"
     break;
 
-  case 30: /* bg_mode: YY_SUSHI_AMP  */
-#line 87 "sushi_yyparser.y"
-               { (yyval.b) = true; }
+  case 29: /* bg_mode: %empty  */
+#line 94 "sushi_yyparser.y"
+                                          { (yyval.b) = false; }
 #line 1262 "sushi_yyparser.tab.c"
     break;
 
-  case 31: /* exe: args  */
-#line 90 "sushi_yyparser.y"
-       { (yyval.p) = new Program((yyvsp[0].s_vec)); }
+  case 30: /* bg_mode: YY_SUSHI_AMP  */
+#line 95 "sushi_yyparser.y"
+                                          { (yyval.b) = true; }
 #line 1268 "sushi_yyparser.tab.c"
     break;
 
-  case 32: /* args: arg  */
-#line 93 "sushi_yyparser.y"
-      { (yyval.s_vec) = new std::vector<std::string*>(); (yyval.s_vec)->push_back((yyvsp[0].s)); }
+  case 31: /* exe: args  */
+#line 99 "sushi_yyparser.y"
+                                          { (yyval.p) = new Program((yyvsp[0].s_vec)); }
 #line 1274 "sushi_yyparser.tab.c"
     break;
 
-  case 33: /* args: args arg  */
-#line 94 "sushi_yyparser.y"
-           { (yyvsp[-1].s_vec)->push_back((yyvsp[0].s)); (yyval.s_vec) = (yyvsp[-1].s_vec); }
+  case 32: /* args: arg  */
+#line 103 "sushi_yyparser.y"
+                                          { (yyval.s_vec) = new std::vector<std::string*>(); (yyval.s_vec)->push_back((yyvsp[0].s)); }
 #line 1280 "sushi_yyparser.tab.c"
     break;
 
-  case 34: /* arg: YY_SUSHI_TOK  */
-#line 97 "sushi_yyparser.y"
-               { (yyval.s) = (yyvsp[0].s); }
+  case 33: /* args: args arg  */
+#line 104 "sushi_yyparser.y"
+                                          { (yyvsp[-1].s_vec)->push_back((yyvsp[0].s)); (yyval.s_vec) = (yyvsp[-1].s_vec); }
 #line 1286 "sushi_yyparser.tab.c"
     break;
 
+  case 34: /* arg: YY_SUSHI_TOK  */
+#line 108 "sushi_yyparser.y"
+                 {
+        if (!(*(yyvsp[0].s)).empty() && (*(yyvsp[0].s))[0] == '$') {
+            std::string var_name = (yyvsp[0].s)->substr(1);  // Strip leading $
+            delete (yyvsp[0].s);
+            (yyval.s) = Sushi::getenv(var_name.c_str());
+        } else {
+            (yyval.s) = (yyvsp[0].s);
+        }
+    }
+#line 1300 "sushi_yyparser.tab.c"
+    break;
 
-#line 1290 "sushi_yyparser.tab.c"
+
+#line 1304 "sushi_yyparser.tab.c"
 
       default: break;
     }
@@ -1479,7 +1493,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 99 "sushi_yyparser.y"
+#line 120 "sushi_yyparser.y"
 
 
-/* This section is empty */
+/* Nothing here */
