@@ -26,11 +26,10 @@ exit            { return YY_SUSHI_EXIT; }
 pwd             { return YY_SUSHI_PWD;  }
 cd              { return YY_SUSHI_CD;   }
 history         { return YY_SUSHI_HISTORY;   }
-SET             { return YY_SUSHI_SET; }
 
 "!"{digit}+     { yylval.i = std::atoi(yytext+1);
                   return YY_SUSHI_BANG; }
-\${alnum}+      { yylval.s = Sushi::getenv(yytext + 1);
+\$({alnum}+|\?)      { yylval.s = Sushi::getenv(yytext + 1);
                   return YY_SUSHI_TOK; }
 {permitted}+    { yylval.s = Sushi::unquote_and_dup(yytext);
                   return YY_SUSHI_TOK; }
