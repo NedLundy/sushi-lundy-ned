@@ -187,13 +187,17 @@ std::string* Sushi::getenv(const char* name) {
   return new std::string(val);
 };
 
+/*
 void Sushi::assign(const std::string* name, const std::string* value) {
   setenv(name->c_str(), value->c_str(), 1);
   delete name;
   delete value;
 };
+*/
 void Sushi::putenv(const std::string *name, const std::string *value) {
     std::string env = *name + "=" + *value;
+    // DZ: Do not do strdup(), it's a memory leak
+    // DZ: Use setenv, not putenv
     ::putenv(strdup(env.c_str()));  
     delete name;
     delete value;
