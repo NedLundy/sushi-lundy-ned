@@ -83,7 +83,7 @@ union YYSTYPE
   std::string *s;
   std::vector <std::string*> *s_vec;
   Program *p;
-  Redirection redir;
+  Redirection *redir;
 
 #line 89 "sushi_yyparser.tab.h"
 

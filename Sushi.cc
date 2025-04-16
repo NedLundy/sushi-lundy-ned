@@ -1,205 +1,161 @@
 #include <iostream>
 #include <fstream>
-#include <algorithm>
+#include <cstring> 
 #include <iomanip>
-#include <cstdio>
 #include <csignal>
+#include <cstdlib>
 #include <cassert>
+#include <unistd.h>
 #include <sys/wait.h>
-#include <cstdlib>     
 #include "Sushi.hh"
-#include <cstring>
-
 
 const std::string Sushi::DEFAULT_PROMPT = "sushi> ";
 const std::string Sushi::DEFAULT_CONFIG = "sushi.conf";
 
-std::string Sushi::read_line(std::istream &in)
-{
+Sushi::Sushi() {
+  prevent_interruption();
+  const char *home = std::getenv("HOME");
+  if (home) {
+    std::string config_path = std::string(home) + "/" + DEFAULT_CONFIG;
+    read_config(config_path.c_str(), true);
+  }
+}
+
+std::string Sushi::read_line(std::istream &in) {
   std::string line;
-  if(!std::getline(in, line)) {
-    if(!in.eof()) { 
-      std::perror("getline");
-    }
-    return "";
-  }
-  if(std::all_of(line.begin(), line.end(), isspace)) {
-    return "";
-  }
-  if(line.size() > MAX_INPUT_SIZE) {
+  if (!std::getline(in, line) || line.find_first_not_of(" \t\n") == std::string::npos) return "";
+  if (line.size() > MAX_INPUT_SIZE) {
     line.resize(MAX_INPUT_SIZE);
-    std::cerr << "Line too long, truncated." << std::endl;
+    std::cerr << "Line too long, truncated.\n";
   }
-  return line; 
+  return line;
 }
 
-bool Sushi::read_config(const char *fname, bool ok_if_missing)
-{
-  std::ifstream config_file(fname);
-  if (!config_file) {
-    if (!ok_if_missing) {
-      std::perror(fname);
-      return false;
-    }
-    return true;
+bool Sushi::read_config(const char *fname, bool ok_if_missing) {
+  std::ifstream file(fname);
+  if (!file) return ok_if_missing;
+  std::string line;
+  while (std::getline(file, line)) {
+    if (!parse_command(line)) store_to_history(line);
   }
-
-  while(!config_file.eof()) {
-    std::string line = read_line(config_file);
-    if(!parse_command(line)) {
-      store_to_history(line);
-    }
-  }
-  
-  return true; 
+  return true;
 }
 
-void Sushi::store_to_history(std::string line)
-{
+void Sushi::store_to_history(std::string line) {
   if (line.empty()) return;
-  while (history.size() >= HISTORY_LENGTH) {
-    history.pop_front();
-  }
-  history.emplace_back(line);
+  if (history.size() >= HISTORY_LENGTH) history.pop_front();
+  history.push_back(line);
 }
 
-void Sushi::show_history() 
-{
-  int index = 1;
-  if (history.size() == HISTORY_LENGTH) {
-    history.pop_front();
-  }
-  for (const auto &cmd: history) {
-    std::cout << std::setw(5) << index++ << "  " << cmd << std::endl;
-  }
-  std::cout << std::setw(5) << index++ << "  " << "history" << std::endl;
+void Sushi::show_history() {
+  int i = 1;
+  for (const auto& cmd : history) std::cout << std::setw(5) << i++ << "  " << cmd << '\n';
+  std::cout << std::setw(5) << i << "  history" << '\n';
 }
 
 void Sushi::set_exit_flag() { exit_flag = true; }
 
 bool Sushi::get_exit_flag() const { return exit_flag; }
 
-int Sushi::spawn(Program *exe, bool bg) {
-    pid_t pid = fork();
-
-    if (pid == -1) {
-        std::perror("fork");
-        return EXIT_FAILURE;
-    }
-
-    if (pid == 0) {
-        // Child process
-        char* const* args = exe->vector2array();
-        assert(args);
-        execvp(args[0], args);
-        std::perror(args[0]);
-        _exit(EXIT_FAILURE);
-    }
-
-    // Parent
-    int status = 0;
-    if (!bg) {
-        if (waitpid(pid, &status, 0) != pid) {
-            std::perror("waitpid");
-            status = 1;
-        }
-
-        
-        std::string code = std::to_string(WEXITSTATUS(status));
-        setenv("?", code.c_str(), 1);
-    } else {
-        
-        setenv("?", "0", 1);
-    }
-
-    return EXIT_SUCCESS;
-};
-
 void Sushi::prevent_interruption() {
   struct sigaction sa;
   sa.sa_handler = refuse_to_die;
   sa.sa_flags = SA_RESTART;
-  if(sigaction(SIGINT, &sa, nullptr) != 0) {
-    std::perror("sigaction");
-    std::exit(EXIT_FAILURE);
-  };
-};
+  sigaction(SIGINT, &sa, nullptr);
+}
 
 void Sushi::refuse_to_die(int signo) {
   UNUSED(signo);
-  std::cerr << "Type exit to exit the shell" << '\n';
-};
+  std::cerr << "Type exit to exit the shell\n";
+}
 
 void Sushi::mainloop() {
-  while (!get_exit_flag()) {
-    std::string* ps1 = Sushi::getenv("PS1");
-    std::cout << (ps1 && !ps1->empty() ? *ps1 : DEFAULT_PROMPT);
-    delete ps1;
+  while (true) {
+    if (get_exit_flag()) break;
 
-    std::string command = read_line(std::cin);
-    if (command.empty()) continue;
+    const char *ps1 = std::getenv("PS1");
+    std::cout << (ps1 ? ps1 : DEFAULT_PROMPT);
+    std::cout.flush();
 
-    if (parse_command(command) == 0) {
-      store_to_history(command);
+    std::string cmd = read_line(std::cin);
+
+    if (!parse_command(cmd) && !re_execute()) {
+      store_to_history(cmd);
+    }
+
+    if (get_exit_flag()) break;
+  }
+}
+
+int Sushi::spawn(Program *exe, bool bg) {
+  std::vector<pid_t> children;
+  int in_fd = STDIN_FILENO;
+  int pipefd[2];
+
+  Program* current = exe;
+
+  while (current) {
+    bool has_pipe = current->pipe != nullptr;
+    if (has_pipe && pipe(pipefd) < 0) {
+      std::perror("pipe");
+      return EXIT_FAILURE;
+    }
+
+    pid_t pid = fork();
+    if (pid < 0) {
+      std::perror("fork");
+      return EXIT_FAILURE;
+    }
+
+    if (pid == 0) {
+      // Child
+      if (in_fd != STDIN_FILENO) {
+        dup2(in_fd, STDIN_FILENO);
+        close(in_fd);
+      }
+
+      if (has_pipe) {
+        close(pipefd[0]);
+        dup2(pipefd[1], STDOUT_FILENO);
+        close(pipefd[1]);
+      }
+
+      char* const* args = current->vector2array();
+      execvp(args[0], args);
+      std::perror(args[0]);
+      _exit(EXIT_FAILURE);
+    }
+
+    // Parent
+    children.push_back(pid);
+
+    if (in_fd != STDIN_FILENO)
+      close(in_fd);
+
+    if (has_pipe) {
+      close(pipefd[1]);
+      in_fd = pipefd[0];
+    }
+
+    current = current->pipe;
+  }
+
+  if (!bg) {
+    for (pid_t pid : children) {
+      waitpid(pid, nullptr, 0);
     }
   }
-};
 
-void Sushi::re_parse(int i) {
-    if (i <= 0 || i > static_cast<int>(history.size())) {
-      std::cerr << "Error: !" << i << ": event not found" << std::endl;
-      return;
-    }
-    redo = history[i - 1];
-  };  
-
-
-bool Sushi::re_execute() {
-  if (redo.empty()) return false;
-  if (parse_command(redo) == 0) {
-    store_to_history(redo);
-    redo.clear();
-    return true;
-  }
-  redo.clear();
-  return false;
-};
+  return EXIT_SUCCESS;
+}
 
 char* const* Program::vector2array() {
   assert(args);
-  size_t size = args->size();
-  char** array = new char*[size + 1];
-  for (size_t i = 0; i < size; ++i) {
-    assert((*args)[i]);
-    array[i] = const_cast<char*>((*args)[i]->c_str());
-  }
-  array[size] = nullptr;
-  return array;
-};
-
-Program::~Program() {
-
-};
-
-std::string* Sushi::getenv(const char* name) {
-  const char* val = std::getenv(name);
-  if (!val) return new std::string("");
-  return new std::string(val);
-};
-
-/*
-void Sushi::assign(const std::string* name, const std::string* value) {
-  setenv(name->c_str(), value->c_str(), 1);
-  delete name;
-  delete value;
-};
-*/
-void Sushi::putenv(const std::string *name, const std::string *value) {
-    std::string env = *name + "=" + *value;
-    // DZ: Do not do strdup(), it's a memory leak
-    // DZ: Use setenv, not putenv
-    ::putenv(strdup(env.c_str()));  
-    delete name;
-    delete value;
+  size_t n = args->size();
+  char** arr = new char*[n + 1];
+  for (size_t i = 0; i < n; ++i) arr[i] = const_cast<char*>((*args)[i]->c_str());
+  arr[n] = nullptr;
+  return arr;
 }
 
+Program::~Program() {}

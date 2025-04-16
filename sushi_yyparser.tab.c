@@ -1167,7 +1167,7 @@ yyreduce:
 
   case 14: /* redir_exe: exe any_redir  */
 #line 58 "sushi_yyparser.y"
-                { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
+                { (yyvsp[-1].p)->set_redir(*(yyvsp[0].redir)); delete (yyvsp[0].redir); (yyval.p) = (yyvsp[-1].p); }
 #line 1172 "sushi_yyparser.tab.c"
     break;
 
@@ -1179,7 +1179,7 @@ yyreduce:
 
   case 16: /* in_exe: exe in_redir  */
 #line 62 "sushi_yyparser.y"
-               { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
+               { (yyvsp[-1].p)->set_redir(*(yyvsp[0].redir)); delete (yyvsp[0].redir); (yyval.p) = (yyvsp[-1].p); }
 #line 1184 "sushi_yyparser.tab.c"
     break;
 
@@ -1191,19 +1191,19 @@ yyreduce:
 
   case 18: /* out_exe: exe out_redir  */
 #line 66 "sushi_yyparser.y"
-                { (yyvsp[-1].p)->set_redir((yyvsp[0].redir)); (yyval.p) = (yyvsp[-1].p); }
+                { (yyvsp[-1].p)->set_redir(*(yyvsp[0].redir)); delete (yyvsp[0].redir); (yyval.p) = (yyvsp[-1].p); }
 #line 1196 "sushi_yyparser.tab.c"
     break;
 
   case 19: /* inout_redir: in_redir out_redir  */
 #line 69 "sushi_yyparser.y"
-                     { (yyvsp[0].redir).set_in((yyvsp[-1].redir)); (yyval.redir) = (yyvsp[0].redir); }
+                     { (yyvsp[0].redir)->set_in(*(yyvsp[-1].redir)); delete (yyvsp[-1].redir); (yyval.redir) = (yyvsp[0].redir); }
 #line 1202 "sushi_yyparser.tab.c"
     break;
 
   case 20: /* inout_redir: out_redir in_redir  */
 #line 70 "sushi_yyparser.y"
-                     { (yyvsp[-1].redir).set_in((yyvsp[0].redir)); (yyval.redir) = (yyvsp[-1].redir); }
+                     { (yyvsp[-1].redir)->set_in(*(yyvsp[0].redir)); delete (yyvsp[0].redir); (yyval.redir) = (yyvsp[-1].redir); }
 #line 1208 "sushi_yyparser.tab.c"
     break;
 
@@ -1239,19 +1239,19 @@ yyreduce:
 
   case 26: /* in_redir: YY_SUSHI_LESS arg  */
 #line 81 "sushi_yyparser.y"
-                                   { (yyval.redir).set_in((yyvsp[0].s)); }
+                                   { (yyval.redir) = new Redirection(); (yyval.redir)->set_in((yyvsp[0].s)); }
 #line 1244 "sushi_yyparser.tab.c"
     break;
 
   case 27: /* out1_redir: YY_SUSHI_MORE arg  */
 #line 82 "sushi_yyparser.y"
-                                   { (yyval.redir).set_out1((yyvsp[0].s)); }
+                                   { (yyval.redir) = new Redirection(); (yyval.redir)->set_out1((yyvsp[0].s)); }
 #line 1250 "sushi_yyparser.tab.c"
     break;
 
   case 28: /* out2_redir: YY_SUSHI_MOREMORE arg  */
 #line 83 "sushi_yyparser.y"
-                                   { (yyval.redir).set_out2((yyvsp[0].s)); }
+                                   { (yyval.redir) = new Redirection(); (yyval.redir)->set_out2((yyvsp[0].s)); }
 #line 1256 "sushi_yyparser.tab.c"
     break;
 

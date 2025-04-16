@@ -9,7 +9,7 @@ all: $(BIN)
 include DEPEND
 
 $(BIN): $(OBJS) 
-	$(CXX) -o $(BIN) $(OBJS) $(LDLAGS)
+	$(CXX) -o $(BIN) $(OBJS) $(LDFLAGS)
 
 .cc.o:
 	$(CXX) $(CXXFLAGS) -c $<
