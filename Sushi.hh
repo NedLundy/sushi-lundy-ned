@@ -6,11 +6,13 @@
 
 class Redirection {
 public:
-  std::string *redir_in = nullptr;
-  std::string *redir_out1 = nullptr;
-  std::string *redir_out2 = nullptr;
+  // DZ: Classes with non-default constructors not allowed in unions
+  std::string *redir_in/* = nullptr*/;
+  std::string *redir_out1/* = nullptr*/;
+  std::string *redir_out2/* = nullptr*/;
 
   Redirection() = default;
+  void clear() { redir_out1 = redir_out2 = redir_in = nullptr; }
   void set_out1(std::string *fname) { redir_out1 = fname; }
   void set_out2(std::string *fname) { redir_out2 = fname; }
   void set_in(std::string *fname)   { redir_in = fname; }
@@ -25,11 +27,12 @@ private:
   Redirection redir;
 
 public:
-  Program *pipe; 
+  Program *pipe; // DZ: It was private for a reason!
   Program(std::vector<std::string*> *args) : args(args) {};
   ~Program();
   void set_pipe(Program *pipe) { this->pipe = pipe; };
   void set_redir(Redirection &redir) { this->redir = redir; };
+  void clear_redir() { redir.clear(); }
   std::string progname() { return *args->at(0); }
 
   char* const* vector2array();
@@ -62,6 +65,8 @@ public:
   static int parse_command(const std::string command);
   void mainloop(); 
   int spawn(Program *exe, bool bg);   
+  void pwd(); // New method
+  void cd(std::string *new_dir); // New method
   static void prevent_interruption(); 
   static void refuse_to_die(int signo);
 
