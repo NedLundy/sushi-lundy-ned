@@ -1861,4 +1861,3 @@ int Sushi::parse_command(const std::string command) {
   yylex_destroy();
   return retval;
 }
-

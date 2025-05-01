@@ -1,6 +1,5 @@
 %{
 #include "Sushi.hh"
-#include "Pipe.hh"
   int yylex();
   void yyerror(const char* s);
 %}
@@ -12,7 +11,7 @@
   std::vector <std::string*> *s_vec;
   Program *p;
   Pipe *pp;
-  Redirection redir;
+  Redirection *redir;
 }
 
 %token YY_SUSHI_AMP
@@ -62,20 +61,20 @@ pipe:
 | pipe YY_SUSHI_BAR out_exe { $3->set_pipe($1->tl()); $1->tl($3); $$ = $1; }
 
 redir_exe: 
-exe { $$ = $1; $$->clear_redir(); }          
-| exe any_redir { $1->set_redir($2); $$ = $1; }
+exe { $$ = $1; $$->redir.clear(); }          
+| exe any_redir { $$ = $1; $$->redir = *$2; delete $2; }
 
 in_exe:   
-  exe { $$ = $1; $$->clear_redir(); }          
-| exe in_redir { $1->set_redir($2); $$ = $1; }
+  exe { $$ = $1; $$->redir.clear(); }          
+| exe in_redir { $$ = $1; $$->redir = *$2; delete $2; }
 
 out_exe:   
-  exe { $$ = $1; $$->clear_redir(); }          
-| exe out_redir { $1->set_redir($2); $$ = $1; }
+  exe { $$ = $1; $$->redir.clear(); }          
+| exe out_redir { $$ = $1; $$->redir = *$2; delete $2; }
 
 inout_redir:    
-  in_redir out_redir { $2.set_in($1); $$ = $2; }
-| out_redir in_redir { $1.set_in($2); $$ = $1; } 
+  in_redir out_redir { $2->set_in(*$1); delete $1; $$ = $2; }
+| out_redir in_redir { $1->set_in(*$2); delete $2; $$ = $1; } 
 
 out_redir:
   out1_redir { $$ = $1; }
@@ -86,9 +85,9 @@ any_redir:
 | out_redir  { $$ = $1; }  
 | inout_redir  { $$ = $1; }
 
-in_redir:   YY_SUSHI_LESS arg      { $$.set_in($2); }
-out1_redir: YY_SUSHI_MORE arg      { $$.set_out1($2); }
-out2_redir: YY_SUSHI_MOREMORE arg  { $$.set_out2($2); }
+in_redir: YY_SUSHI_LESS arg { $$ = new Redirection(); $$->set_in($2); }
+out1_redir: YY_SUSHI_MORE arg      { $$ = new Redirection(); $$->set_out1($2); }
+out2_redir: YY_SUSHI_MOREMORE arg  { $$ = new Redirection(); $$->set_out2($2); }
 
 bg_mode: 
  %empty        { $$ = false; }

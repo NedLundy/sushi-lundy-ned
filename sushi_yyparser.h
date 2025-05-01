@@ -35,65 +35,65 @@
    especially those whose name start with YY_ or yy_.  They are
    private implementation details that can be changed or removed.  */
 
-#ifndef YY_YY_SUSHI_YYPARSER_H_INCLUDED
-# define YY_YY_SUSHI_YYPARSER_H_INCLUDED
-/* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
-#if YYDEBUG
-extern int yydebug;
-#endif
-
-/* Token kinds.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
-  {
-    YYEMPTY = -2,
-    YYEOF = 0,                     /* "end of file"  */
-    YYerror = 256,                 /* error  */
-    YYUNDEF = 257,                 /* "invalid token"  */
-    YY_SUSHI_AMP = 258,            /* YY_SUSHI_AMP  */
-    YY_SUSHI_BANG = 259,           /* YY_SUSHI_BANG  */
-    YY_SUSHI_BAR = 260,            /* YY_SUSHI_BAR  */
-    YY_SUSHI_CD = 261,             /* YY_SUSHI_CD  */
-    YY_SUSHI_EXIT = 262,           /* YY_SUSHI_EXIT  */
-    YY_SUSHI_HISTORY = 263,        /* YY_SUSHI_HISTORY  */
-    YY_SUSHI_JOBS = 264,           /* YY_SUSHI_JOBS  */
-    YY_SUSHI_LESS = 265,           /* YY_SUSHI_LESS  */
-    YY_SUSHI_MORE = 266,           /* YY_SUSHI_MORE  */
-    YY_SUSHI_MOREMORE = 267,       /* YY_SUSHI_MOREMORE  */
-    YY_SUSHI_PWD = 268,            /* YY_SUSHI_PWD  */
-    YY_SUSHI_SET = 269,            /* YY_SUSHI_SET  */
-    YY_SUSHI_UNKNOWN = 270,        /* YY_SUSHI_UNKNOWN  */
-    YY_SUSHI_TOK = 271             /* YY_SUSHI_TOK  */
-  };
-  typedef enum yytokentype yytoken_kind_t;
-#endif
-
-/* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-#line 7 "sushi_yyparser.y"
-
-  std::string *s;
-  int i;
-
-#line 85 "sushi_yyparser.h"
-
-};
-typedef union YYSTYPE YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
-#endif
-
-
-extern YYSTYPE yylval;
-
-
-int yyparse (void);
-
-
-#endif /* !YY_YY_SUSHI_YYPARSER_H_INCLUDED  */
+   #ifndef YY_YY_SUSHI_YYPARSER_H_INCLUDED
+   # define YY_YY_SUSHI_YYPARSER_H_INCLUDED
+   /* Debug traces.  */
+   #ifndef YYDEBUG
+   # define YYDEBUG 0
+   #endif
+   #if YYDEBUG
+   extern int yydebug;
+   #endif
+   
+   /* Token kinds.  */
+   #ifndef YYTOKENTYPE
+   # define YYTOKENTYPE
+     enum yytokentype
+     {
+       YYEMPTY = -2,
+       YYEOF = 0,                     /* "end of file"  */
+       YYerror = 256,                 /* error  */
+       YYUNDEF = 257,                 /* "invalid token"  */
+       YY_SUSHI_AMP = 258,            /* YY_SUSHI_AMP  */
+       YY_SUSHI_BANG = 259,           /* YY_SUSHI_BANG  */
+       YY_SUSHI_BAR = 260,            /* YY_SUSHI_BAR  */
+       YY_SUSHI_CD = 261,             /* YY_SUSHI_CD  */
+       YY_SUSHI_EXIT = 262,           /* YY_SUSHI_EXIT  */
+       YY_SUSHI_HISTORY = 263,        /* YY_SUSHI_HISTORY  */
+       YY_SUSHI_JOBS = 264,           /* YY_SUSHI_JOBS  */
+       YY_SUSHI_LESS = 265,           /* YY_SUSHI_LESS  */
+       YY_SUSHI_MORE = 266,           /* YY_SUSHI_MORE  */
+       YY_SUSHI_MOREMORE = 267,       /* YY_SUSHI_MOREMORE  */
+       YY_SUSHI_PWD = 268,            /* YY_SUSHI_PWD  */
+       YY_SUSHI_SET = 269,            /* YY_SUSHI_SET  */
+       YY_SUSHI_UNKNOWN = 270,        /* YY_SUSHI_UNKNOWN  */
+       YY_SUSHI_TOK = 271             /* YY_SUSHI_TOK  */
+     };
+     typedef enum yytokentype yytoken_kind_t;
+   #endif
+   
+   /* Value type.  */
+   #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
+   union YYSTYPE
+   {
+   #line 7 "sushi_yyparser.y"
+   
+     std::string *s;
+     int i;
+   
+   #line 85 "sushi_yyparser.h"
+   
+   };
+   typedef union YYSTYPE YYSTYPE;
+   # define YYSTYPE_IS_TRIVIAL 1
+   # define YYSTYPE_IS_DECLARED 1
+   #endif
+   
+   
+   extern YYSTYPE yylval;
+   
+   
+   int yyparse (void);
+   
+   
+   #endif /* !YY_YY_SUSHI_YYPARSER_H_INCLUDED  */

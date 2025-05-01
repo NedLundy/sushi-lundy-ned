@@ -1,41 +1,55 @@
 #pragma once
 #include <iostream>
-#include <string> 
 #include <deque>
 #include <vector> 
 
+/// I/O redirections, as in "foobar < foo > bar"
 class Redirection {
-public:
-  // DZ: Classes with non-default constructors not allowed in unions
-  std::string *redir_in/* = nullptr*/;
-  std::string *redir_out1/* = nullptr*/;
-  std::string *redir_out2/* = nullptr*/;
-
-  Redirection() = default;
-  void clear() { redir_out1 = redir_out2 = redir_in = nullptr; }
-  void set_out1(std::string *fname) { redir_out1 = fname; }
-  void set_out2(std::string *fname) { redir_out2 = fname; }
-  void set_in(std::string *fname)   { redir_in = fname; }
-  void set_in(Redirection &redir)   {
-    redir_in = redir.redir_out1 ? redir.redir_out1 : redir.redir_out2;
-  }
-};
+  public:
+    std::string *redir_in = nullptr;
+    std::string *redir_out1 = nullptr;
+    std::string *redir_out2 = nullptr;
+  
+    Redirection() = default;
+  
+    void set_out1(std::string *fname) { redir_out1 = fname; }
+    void set_out2(std::string *fname) { redir_out2 = fname; }
+    void set_in(std::string *fname)   { redir_in = fname; }
+  
+    void set_in(Redirection &redir) {
+      redir_in = redir.redir_out1 ? redir.redir_out1 : redir.redir_out2;
+    }
+  
+    void clear() {
+      redir_in = redir_out1 = redir_out2 = nullptr;
+    }
+};  
 
 class Program {
+  public:
+    std::vector<std::string*> *args;
+    Program *pipe = nullptr;
+    Redirection redir;
+  
+    Program(std::vector<std::string*> *args) : args(args) {}
+    ~Program();
+
+    void set_pipe(Program *pipe) { this->pipe = pipe; }
+    void set_redir(Redirection &r) { redir = r; }
+    void clear_redir() { redir.clear(); }
+
+    char* const* vector2array();
+    Program *prev() { return pipe; }
+};
+
+class Pipe {
 private:
-  std::vector<std::string*> *args; 
-  Redirection redir;
-
+  Program *head, *tail;
 public:
-  Program *pipe; // DZ: It was private for a reason!
-  Program(std::vector<std::string*> *args) : args(args) {};
-  ~Program();
-  void set_pipe(Program *pipe) { this->pipe = pipe; };
-  void set_redir(Redirection &redir) { this->redir = redir; };
-  void clear_redir() { redir.clear(); }
-  std::string progname() { return *args->at(0); }
-
-  char* const* vector2array();
+  Pipe(Program *p) : head(p), tail(p) {};
+  Program *hd() { return head; }
+  Program *tl() { return tail; }
+  void tl(Program *p) { tail = p; }
 };
 
 class Sushi {
@@ -49,12 +63,9 @@ private:
 public:
   Sushi();
   static std::string read_line(std::istream &in);
-  static std::string* unquote_and_dup(const char *s); // ✅ made static
-  static std::string* getenv(const char *name); 
-  static void putenv(const std::string *name, const std::string *value); 
-
-  void assign(const std::string *name, const std::string *value);
-
+  static std::string *unquote_and_dup(const char *s); 
+  static std::string *getenv(const char *name);
+  static void putenv(const std::string *name, const std::string *value);
   bool read_config(const char *fname, bool ok_if_missing);
   void store_to_history(std::string line);
   void show_history();
@@ -64,9 +75,9 @@ public:
   bool get_exit_flag() const; 
   static int parse_command(const std::string command);
   void mainloop(); 
-  int spawn(Program *exe, bool bg);   
   void pwd(); // New method
   void cd(std::string *new_dir); // New method
+  int spawn(Program *exe, bool bg) const;   
   static void prevent_interruption(); 
   static void refuse_to_die(int signo);
 
@@ -74,6 +85,6 @@ public:
   static const std::string DEFAULT_CONFIG;
 };
 
-#define UNUSED(expr) do {(void)(expr);} while (0)
+template<typename T> void UNUSED(T&&) {}
 
 extern Sushi my_shell;

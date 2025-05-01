@@ -1,7 +1,6 @@
 %{
 #include <string>
 #include "Sushi.hh"
-#include "Pipe.hh"
 #include "sushi_yyparser.tab.h"
 #ifdef __APPLE__
 extern int yylex(void);
